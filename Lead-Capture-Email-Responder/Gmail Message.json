@@ -1,0 +1,456 @@
+{
+  "name": "Gmail Message",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Test Form",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name"
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "0-100"
+                  },
+                  {
+                    "option": "100-1000"
+                  },
+                  {
+                    "option": "1000+"
+                  }
+                ]
+              }
+            },
+            {
+              "fieldLabel": "Message",
+              "fieldType": "textarea",
+              "placeholder": "Please enter you text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "db8431dc-db59-46ae-b7f8-3816b2f57340",
+      "name": "On form submission",
+      "webhookId": "f8ae9246-9e0d-4354-b24a-47015b588e9f"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g",
+          "mode": "list",
+          "cachedResultName": "N8N Test Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.Name }}",
+            "Email": "={{ $json.Email }}",
+            "budget": "={{ $json.Budget }}",
+            "date": "={{ $today }}",
+            "message": "={{ $json.Message }}",
+            "Rejected": "={{ $if($json.Budget === \"1000+\",\"False\",\"True\") }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "budget",
+              "displayName": "budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Rejected",
+              "displayName": "Rejected",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ea028224-5ad6-49b7-837b-b86e6412b387",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c919ebe7-c9f8-4097-b522-c53844294fae",
+              "leftValue": "={{ $json.budget }}",
+              "rightValue": "0-100",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "95cf8294-c745-4801-9bd1-16b9c8282135",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.budget }}",
+                    "rightValue": "0-100",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b6b3bcd5-7672-46c0-b640-cbbef42e38bf"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Not accpted budget"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dccb6bcc-c61d-4d03-b3ee-6917cdc185ba",
+                    "leftValue": "={{ $json.budget }}",
+                    "rightValue": "0-100",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Accpted budget"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b5c7b9a8-7343-47d8-98d3-99b0eb2641eb",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Hey, Thanks for enquiring the ABC company",
+        "message": "=Hey , {{ $json.Name }}\n\nthanks for inquiring me we need quickk call for further discussion\n\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        880,
+        -192
+      ],
+      "id": "bda18d4a-0937-450b-ba13-7400a64625df",
+      "name": "Send a message",
+      "webhookId": "2b168f42-5d75-4766-a3f3-6d793a127b01",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Hey, Thanks for enquiring the ABC company",
+        "message": "=Hey , {{ $json.Name }}\n\nthanks for inquiring me we need quickk call for further discussion about budget we quite low\n\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        896,
+        192
+      ],
+      "id": "3247ed5d-3263-4416-9614-aa5afc4d0b56",
+      "name": "Send a message1",
+      "webhookId": "2b168f42-5d75-4766-a3f3-6d793a127b01",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1120,
+        -32
+      ],
+      "id": "94474ea9-1c02-482d-af72-487541bb7d83",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "=mahnoorarif@yopmail.com",
+        "subject": "alert from message",
+        "message": "=Hi this is new member\n{{ $('Switch').item.json.Name }}{{ $('Switch').item.json.Email }}{{ $('Switch').item.json.budget }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1328,
+        -32
+      ],
+      "id": "c1126010-888d-41f1-a480-ec885c71e3f9",
+      "name": "Send a message2",
+      "webhookId": "2b168f42-5d75-4766-a3f3-6d793a127b01",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Name": "Mahnoor",
+          "Email": "mahnoorarif@yopmail.com",
+          "Budget": "0-100",
+          "Message": "Need test on this budget",
+          "submittedAt": "2025-09-16T00:27:09.257+05:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bbfcfd8d-7b36-4b00-b5a8-13397191373c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "p3efOAiaOvFXU9Zk",
+  "tags": []
+}

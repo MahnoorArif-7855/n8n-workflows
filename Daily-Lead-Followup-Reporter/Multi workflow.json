@@ -1,0 +1,225 @@
+{
+  "name": "Multi workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "jsonExample"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4ce62bb2-2ce8-4752-ad9b-bcd56d14a659",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g",
+          "mode": "list",
+          "cachedResultName": "N8N Test Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pyTUcRr6uFoNmJd8ZJRGFgzDUy5kpvpDiB2r5rbFU2g/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "date",
+              "lookupValue": "={{ $today }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "338394a0-73bb-41d0-b748-ac297bb9ed1c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        640,
+        0
+      ],
+      "id": "122205f4-398c-41bd-bcbe-c1bdb0447bfa",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5493bf54-2fd7-46fa-bc45-931ef107db1c",
+              "leftValue": "={{ $json.Rejected }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "a52fee8e-5e51-4712-9afb-466bb494efe8",
+              "leftValue": "={{ $json.Called }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a01d3927-c406-471a-96a9-3d8cc68659e3",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "results = []\n\n# Collect all lines into one string\nall_content = \"\"\n\nfor item in _input.all():\n    for person in item.json[\"data\"]:\n        all_content += f\"\"\"name: {person['Name']}\nemail: {person['Email']}\nbudget: {person['budget']}\ndate: {person['date']}\n\n\"\"\"  # extra newline for spacing\n\n# Return as one single item for Gmail node\nresults.append({\"json\": {\"email_content\": all_content}})\n\nreturn results\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        0
+      ],
+      "id": "ef027cc9-eb71-46bd-80af-de9c0291ea21",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "sendTo": "mahnoor.arif2023@gmail.com",
+        "subject": "List of users not called yet",
+        "message": "={{ $json.email_content }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "02fc4ac4-cef2-45b5-8b1e-80d939a318b0",
+      "name": "Send a message",
+      "webhookId": "22f10052-ac9d-489e-8a21-a4aa6bcd21f6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Code in Python (Beta)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python (Beta)": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "eb0b7831-e79a-48f5-86c4-c61fa6969245",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "1aYC9iN3wICabTXw",
+  "tags": []
+}

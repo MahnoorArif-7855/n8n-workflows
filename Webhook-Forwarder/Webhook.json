@@ -1,0 +1,59 @@
+{
+  "name": "Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "130e216a-d30a-413c-b035-f27968fd4a32",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c7c99db9-7b62-4821-874b-bc4f86682e55",
+      "name": "Webhook",
+      "webhookId": "130e216a-d30a-413c-b035-f27968fd4a32"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://test123.requestcatcher.com/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a28ccafe-8fba-4c1c-81d0-c90a39ac2609",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4f41ab95-af2f-4a17-b017-80e288e4836b",
+  "meta": {
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "qA4eaCNzKWsU7y6p",
+  "tags": []
+}
