@@ -32,7 +32,8 @@ It acts as an **AI-powered assistant** that can:
 
 ## 🔗 Workflow Image
 
-![Workflow](workflow.png)
+![Workflow](<img width="990" height="596" alt="image" src="https://github.com/user-attachments/assets/8a71d38d-efda-4e41-80d7-3e8ebb35e141" />
+)
 
 ## 🚀 Usage Instructions
 1. Import `AI Agent.json` into your **n8n instance**.  
