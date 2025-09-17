@@ -48,6 +48,10 @@ Webhook-Workflow/
 
 ---
 
+## 🔗 Workflow Image
+
+![Workflow](image.png)
+
 ## 🚀 Usage
 
 1. Import `Webhook.json` into **n8n** (`Workflows → Import from File`).  

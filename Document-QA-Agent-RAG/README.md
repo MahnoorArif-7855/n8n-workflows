@@ -79,6 +79,9 @@ Document-QA-Agent-RAG/
 4. Ask questions about the uploaded document.  
 
 ---
+## 🔗 Workflow Image
+
+![Workflow](image.png)
 
 ## 📝 Notes
 - Document source: **Google Drive** (can be replaced with other sources).  

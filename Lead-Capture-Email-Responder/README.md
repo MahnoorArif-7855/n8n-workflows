@@ -72,6 +72,9 @@ date: 2025-09-17T00:00:00.000+05:00
 ```
 
 ---
+## 🔗 Workflow Image
+
+![Workflow](image.png)
 
 ## 📝 Notes
 - The input is assumed to be already filtered for `"Called": false`.

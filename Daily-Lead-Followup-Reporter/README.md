@@ -86,6 +86,10 @@ date: 2025-09-17T00:00:00.000+05:00
 
 ---
 
+## 🔗 Workflow Image
+
+![Workflow](image.png)
+
 ## 🚀 Usage
 1. Import workflow into **n8n**.  
 2. Configure Gmail credentials.  
