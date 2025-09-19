@@ -1,0 +1,158 @@
+{
+  "name": "Daily weather with API",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -432,
+        -144
+      ],
+      "id": "7c007a29-9285-4b1c-b01d-b4f5cd0831b2",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "format": "imperial",
+        "locationSelection": "zipCode",
+        "zipCode": "49060"
+      },
+      "type": "n8n-nodes-base.openWeatherMap",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "b328e34b-a698-48ad-b8cc-1c272236ff73",
+      "name": "OpenWeatherMap",
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "OY0cXl7m0INw6cIc",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "mahnoor.testing@gmail.com",
+        "subject": "Daily weather",
+        "message": "=Good Morning!\nThe current tempurature is {{ $json.main.temp }} in {{ $json.name }} with tempurature range of {{ $json.main.temp_min }} to {{ $json.main.temp_max }} and wind speed of {{ $json.wind.speed }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        336,
+        -144
+      ],
+      "id": "8fcd3500-db15-42b5-954a-87dd76e79602",
+      "name": "Send a message",
+      "webhookId": "bb17b9ad-025e-41f0-b1c1-ef65ce23cd92",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        112,
+        -144
+      ],
+      "id": "86d1dcdb-f5a3-4f65-aa5d-22929ad0a497",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "url": "https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=49060&distance=25&API_KEY=EBA51BBF-01A4-4B45-AE2D-2CBEE454F734",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -144,
+        -288
+      ],
+      "id": "93ad9e47-b218-4e13-a480-e77725e653a4",
+      "name": "AirNow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "OpenWeatherMap",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AirNow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenWeatherMap": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AirNow": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "21b980a5-d510-4cbe-9aec-9bf8872df733",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "VmKB6RpoL4iD6Evg",
+  "tags": []
+}

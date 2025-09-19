@@ -1,0 +1,461 @@
+{
+  "name": "Gmail message to form users",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Sponsor inquiry",
+        "formDescription": "Sponsor inquiry and budget",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Comapny Name"
+            },
+            {
+              "fieldLabel": "Contact Name"
+            },
+            {
+              "fieldLabel": "Email"
+            },
+            {
+              "fieldLabel": "Budget",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Notes",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7801afad-4f14-425f-adaa-ba7e2881c0c9",
+      "name": "On form submission",
+      "webhookId": "44245451-ba60-4862-9deb-1ad346cfd1fa"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Budget }}",
+                    "rightValue": 1000000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt"
+                    },
+                    "id": "deb78ac7-c653-47ef-bd98-91dea5a68fc7"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e66983b4-69af-4a4e-ad42-fa8222fbcbd6",
+                    "leftValue": "={{ $json.Budget }}",
+                    "rightValue": 1000000,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "db12119f-74de-40b0-bcc1-31f47b780656",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s",
+          "mode": "list",
+          "cachedResultName": "Gmail message ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Decision": "Declined",
+            "Company": "={{ $('Switch').item.json['Comapny Name'] }}",
+            "Name": "={{ $('Switch').item.json['Contact Name'] }}",
+            "Contact Email": "={{ $('Switch').item.json.Email }}",
+            "Budget": "={{ $('Switch').item.json.Budget }}",
+            "Submitted At": "={{ $('Switch').item.json.submittedAt }}",
+            "Notes": "={{ $('Switch').item.json.Notes }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "730f6f45-8b20-44a9-a800-cffc6fc72142",
+      "name": "Send Decline meesgae",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s",
+          "mode": "list",
+          "cachedResultName": "Gmail message ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vD3ua3dTaeey9gbFokxPFpW3HddrBi5F8w72HjFnK4s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Decision": "Approval message",
+            "Company": "={{ $('Switch').item.json['Comapny Name'] }}",
+            "Name": "={{ $('Switch').item.json['Contact Name'] }}",
+            "Contact Email": "={{ $('Switch').item.json.Email }}",
+            "Budget": "={{ $('Switch').item.json.Budget }}",
+            "Submitted At": "={{ $('Switch').item.json.submittedAt }}",
+            "Notes": "={{ $('Switch').item.json.Notes }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact Email",
+              "displayName": "Contact Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Budget",
+              "displayName": "Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submitted At",
+              "displayName": "Submitted At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Decision",
+              "displayName": "Decision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        80
+      ],
+      "id": "9e3a228c-2985-42fc-9e09-d3c31879da35",
+      "name": "Send approval message",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Hello   {{ $json['Comapny Name'] }}",
+        "message": "=Hi {{ $json['Contact Name'] }} how can i help you and how we make furthter dicussion",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        432,
+        80
+      ],
+      "id": "5fba0bd4-3ad2-4404-87ec-860e5566e407",
+      "name": "Send approval message1",
+      "webhookId": "b7d8e05e-c717-424d-8e7f-c8067611daed",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Hello   {{ $json['Comapny Name'] }}",
+        "message": "=Hi{{ $json['Contact Name'] }} This is very low budget for furthre discussion",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "23991634-01a2-4573-807d-1031ccd92b4b",
+      "name": "Send Declined message",
+      "webhookId": "b7d8e05e-c717-424d-8e7f-c8067611daed",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vJEy0NlKYbSu1ZTb",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Comapny Name": "OpenAI",
+          "Contact Name": "Mahnoor Arif",
+          "Email": "mahnoor.testing@gmail.com",
+          "Budget": 200000,
+          "Notes": "people are mad at gpt5. save us",
+          "submittedAt": "2025-09-18T17:21:15.449+05:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send Declined message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send approval message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send approval message1": {
+      "main": [
+        [
+          {
+            "node": "Send approval message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Declined message": {
+      "main": [
+        [
+          {
+            "node": "Send Decline meesgae",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b33007bc-82b4-439e-8689-764fc5941cea",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "AOd1VfpevRujvLmI",
+  "tags": []
+}
