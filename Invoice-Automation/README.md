@@ -69,6 +69,3 @@ It detects invoice messages in Gmail, checks for attachments, extracts data from
 4. Activate the workflow.  
 
 Once active, new invoice emails will be automatically processed, extracted, and saved in Google Sheets.
-
-
-![alt text](image-1.png)
