@@ -1,0 +1,246 @@
+{
+  "name": "Sentiment Analyzer",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Sentiment Analyzer",
+        "height": 496,
+        "width": 1200,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -512,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "b4d05807-f9df-43b4-84a6-f47780966b07",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Text: {{$json[\"text\"]}}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a sentiment analysis assistant.  Only reply with one of these labels: Positive, Neutral, or Negative."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        32,
+        -96
+      ],
+      "id": "52ff901b-f984-466a-90ea-79ea5cbaaf91",
+      "name": "Sentiment Analyzer"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        32,
+        112
+      ],
+      "id": "1811c2c5-10ae-4a64-96ff-973de6871414",
+      "name": "classification",
+      "credentials": {
+        "openAiApi": {
+          "id": "ar9jHDUjD7o1KkxX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1YsiX6n0-Fz1bedTY6FSpYfyeVLHCMLcL0QaXB8qCkaQ",
+          "mode": "list",
+          "cachedResultName": "Sentiment Analyzer",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YsiX6n0-Fz1bedTY6FSpYfyeVLHCMLcL0QaXB8qCkaQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YsiX6n0-Fz1bedTY6FSpYfyeVLHCMLcL0QaXB8qCkaQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Link": "={{ $('Fetch Information in Json').item.json.link }}",
+            "Title": "={{ $('Fetch Information in Json').item.json.title }}",
+            "Date": "={{ $('Fetch Information in Json').item.json.date }}",
+            "Sentiment": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "Link"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentiment",
+              "displayName": "Sentiment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        400,
+        -96
+      ],
+      "id": "98ff9a1e-dce4-43a6-996c-b79292bd2aaf",
+      "name": "Save analysis",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => ({\n  json: {\n    title: item.json.title,\n    link: item.json.link,\n    text: item.json.contentSnippet,\n    date: item.json.pubDate\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        -96
+      ],
+      "id": "0ebc9ead-8041-4916-8b0e-06cb9b0ea04c",
+      "name": "Fetch Information in Json"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://news.google.com/rss/search?q=Samsung+Galaxy"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        -96
+      ],
+      "id": "2f133a7f-84b4-4e34-9e2b-294258a529ac",
+      "name": "Google news"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Sentiment Analyzer": {
+      "main": [
+        [
+          {
+            "node": "Save analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "classification": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analyzer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Information in Json": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analyzer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google news": {
+      "main": [
+        [
+          {
+            "node": "Fetch Information in Json",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "92d07367-d513-4b8a-b22c-aab29480b6aa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "qP4Gu3nTGbDlVvX5",
+  "tags": []
+}
