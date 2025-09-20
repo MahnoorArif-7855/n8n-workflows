@@ -1,0 +1,670 @@
+{
+  "name": "Multi AI agent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Agent 1 → Scraper",
+        "height": 416,
+        "width": 688,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        128,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "420b10f0-d33c-4bf4-92f4-859e238d50a9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Agent 2 → Summarizer",
+        "height": 416,
+        "width": 608,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        832,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "a31b676c-e28a-4cd0-a836-735da6e5707d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Agent 3 → Translator",
+        "height": 416,
+        "width": 768,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1456,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "b9e3dccb-5d9c-4af9-abbe-febb4b361061",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "feedUrl": "https://news.google.com/rss/search?q=Pakistan+Economy"
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        -272
+      ],
+      "id": "1c258c8e-a0c8-4570-b0d3-75bfe2c69e37",
+      "name": "Google News"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Map RSS to a uniform schema\nreturn items.map(i => {\n  const j = i.json;\n  return {\n    json: {\n      title: j.title,\n      link: j.link,\n      date: j.pubDate || j.isoDate,\n      source: 'Google News',\n      body: j.contentSnippet || ''\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -272
+      ],
+      "id": "7a7f75fb-7180-4ea4-ac52-4dca99af1c0d",
+      "name": "Fetch information"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc",
+          "mode": "list",
+          "cachedResultName": "multi Agent AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.title }}",
+            "Link": "={{ $json.link }}",
+            "Date": "={{ $json.date }}",
+            "Source": "={{ $json.source }}",
+            "Post": "={{ $json.body }}"
+          },
+          "matchingColumns": [
+            "Link"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -272
+      ],
+      "id": "0c9a0e3e-148a-44ec-8e23-8cbb484f1ffe",
+      "name": "Save information in DB",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -160
+      ],
+      "id": "540a49be-f9f6-4ea4-a409-5f2525b5e374",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ar9jHDUjD7o1KkxX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc",
+          "mode": "list",
+          "cachedResultName": "multi Agent AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Link": "={{ $('Google News').item.json.link }}",
+            "row_number": 0,
+            "Summary": "={{ $json.text }}"
+          },
+          "matchingColumns": [
+            "Link"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1216,
+        -272
+      ],
+      "id": "688caa53-a397-49a7-8580-aeba26fbcad8",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.Post }}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a summarization assistant. Summarize the given text into 2–3 short sentences. Focus only on key facts, avoid opinions or extra words."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        864,
+        -272
+      ],
+      "id": "80224eb0-bc01-46fb-915f-40237359b6e6",
+      "name": "Summarization Assistant"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1488,
+        -112
+      ],
+      "id": "be202d8b-983b-4a8d-885b-0b929fe5fb39",
+      "name": "Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ar9jHDUjD7o1KkxX",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const translations = JSON.parse($json[\"text\"]);\nreturn [{\n  json: {\n    spanish: translations.spanish,\n    french: translations.french\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        -272
+      ],
+      "id": "1bb02f24-0afb-465d-b2b4-885f446f5968",
+      "name": "Fetch information1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json[\"Summary\"]}}\n",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are a translation assistant. \nTranslate the given summary into Spanish and French. \nReturn the translations in JSON format like this:\n{\n  \"spanish\": \"...\",\n  \"french\": \"...\"\n}\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        1488,
+        -272
+      ],
+      "id": "b04ca79c-eedc-4db9-bd99-b05cb4584d92",
+      "name": "Translation Assistant"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc",
+          "mode": "list",
+          "cachedResultName": "multi Agent AI",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1L2kL8qtqRNwPr9Jx337DR-_pUAiOcqhBwUBvsxO-LRc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Link": "={{ $('Update row in sheet').item.json.Link }}",
+            "Spanish": "={{ $json.spanish }}",
+            "French": "={{ $json.french }}"
+          },
+          "matchingColumns": [
+            "Link"
+          ],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Spanish",
+              "displayName": "Spanish",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "French",
+              "displayName": "French",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1952,
+        -272
+      ],
+      "id": "bdcfb68b-a3ff-4878-88d9-f3a72758e0a8",
+      "name": "Save information in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "tpedAgflvdJrD7Yf",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Agents & Responsibilities",
+        "height": 608,
+        "width": 2160,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -480
+      ],
+      "typeVersion": 1,
+      "id": "c955b337-f843-4c6f-bdba-896c5623520b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google News": {
+      "main": [
+        [
+          {
+            "node": "Fetch information",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch information": {
+      "main": [
+        [
+          {
+            "node": "Save information in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarization Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarization Assistant": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Translation Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch information1": {
+      "main": [
+        [
+          {
+            "node": "Save information in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Translation Assistant": {
+      "main": [
+        [
+          {
+            "node": "Fetch information1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save information in DB": {
+      "main": [
+        [
+          {
+            "node": "Summarization Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Translation Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "32783c57-6f61-4b6f-910f-d4448beb2b2c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1fccd36ecdef6da91db436c5860fc3344d2ca06464c03842663f33fe26db558f"
+  },
+  "id": "FT33Age4kh59416l",
+  "tags": []
+}
